@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ahmed Ramadan — iOS Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ==========  THEME TOKENS — MONOCHROME  ========== */
+  :root[data-theme="dark"] {
+    --bg: #0a0a0a;
+    --bg-soft: #111111;
+    --bg-elev: #161616;
+    --ink: #fafafa;
+    --ink-soft: #b8b8b8;
+    --ink-mute: #6a6a6a;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.18);
+    --accent: #ffffff;
+    --accent-soft: rgba(255, 255, 255, 0.92);
+    --grain-opacity: 0.05;
+    --shadow: 0 30px 60px -20px rgba(0,0,0,.7);
+    --glow: rgba(255, 255, 255, 0.06);
+  }
+  :root[data-theme="light"] {
+    --bg: #fafafa;
+    --bg-soft: #f0f0f0;
+    --bg-elev: #ffffff;
+    --ink: #0a0a0a;
+    --ink-soft: #3a3a3a;
+    --ink-mute: #8a8a8a;
+    --line: rgba(0, 0, 0, 0.08);
+    --line-strong: rgba(0, 0, 0, 0.20);
+    --accent: #0a0a0a;
+    --accent-soft: rgba(10, 10, 10, 0.92);
+    --grain-opacity: 0.025;
+    --shadow: 0 30px 60px -25px rgba(0, 0, 0, 0.18);
+    --glow: rgba(0, 0, 0, 0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    overflow-x: hidden;
+    transition: background .5s ease, color .5s ease;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode: overlay;
+  }
+
+  ::selection { background: var(--ink); color: var(--bg); }
+
+  /* ==========  NAVIGATION  ========== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    border-bottom: 1px solid var(--line);
+    transition: all .4s ease;
+  }
+  .nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+  .logo-mark {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+  .logo-mark::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    background: var(--bg);
+  }
+  .logo-mark::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+  .nav-links {
+    display: flex;
+    gap: 2.2rem;
+    list-style: none;
+    align-items: center;
+  }
+  .nav-links a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    position: relative;
+    padding: .25rem 0;
+    transition: color .25s ease;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -2px;
+    width: 0; height: 1px;
+    background: var(--ink);
+    transition: width .3s ease;
+  }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-links a:hover::after { width: 100%; }
+
+  .nav-actions { display: flex; align-items: center; gap: 1rem; }
+
+  .theme-toggle {
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition: all .3s ease;
+  }
+  .theme-toggle:hover {
+    border-color: var(--ink);
+    transform: rotate(20deg);
+  }
+  .theme-toggle svg { width: 16px; height: 16px; }
+  .theme-toggle .sun-icon { display: none; }
+  :root[data-theme="light"] .theme-toggle .moon-icon { display: none; }
+  :root[data-theme="light"] .theme-toggle .sun-icon { display: block; }
+
+  .hamburger {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    cursor: pointer;
+    width: 38px; height: 38px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+  }
+  .hamburger span {
+    display: block;
+    width: 22px; height: 1.5px;
+    background: var(--ink);
+    transition: all .3s ease;
+    border-radius: 2px;
+  }
+  .hamburger.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .hamburger.active span:nth-child(2) { opacity: 0; }
+  .hamburger.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  /* ==========  HERO  ========== */
+  .hero {
+    position: relative;
+    min-height: calc(100vh - 70px);
+    display: flex;
+    align-items: center;
+    padding: 4rem 2rem 6rem;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+    opacity: 0.7;
+  }
+  .hero-orb {
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--glow), transparent 65%);
+    filter: blur(60px);
+    bottom: -200px;
+    right: -150px;
+    opacity: 0.8;
+  }
+
+    .hero-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 60px;
+    }
+
+    .hero-content {
+      flex: 1;
+      max-width: 650px;
+    }
+
+ 
+    .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-mute);
+    animation: fadeUp .8s ease both;
+  }
+  .hero-meta::before {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--ink);
+  }
+  .pulse-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--ink);
+    box-shadow: 0 0 0 0 var(--ink);
+    animation: dotPulse 2s infinite;
+  }
+  @keyframes dotPulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ink) 60%, transparent); }
+    70% { box-shadow: 0 0 0 12px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(3rem, 11vw, 9rem);
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    margin: 1.5rem 0 1.5rem;
+    animation: fadeUp 1s .1s ease both;
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink);
+    position: relative;
+  }
+  .hero h1 em::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 0.08em;
+    width: 100%; height: 0.06em;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: lineGrow 1.2s .8s cubic-bezier(.2,.8,.2,1) forwards;
+  }
+  @keyframes lineGrow { to { transform: scaleX(1); } }
+
+  .hero-sub {
+    max-width: 580px;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 1s .25s ease both;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    animation: fadeUp 1s .4s ease both;
+  }
+  .btn {
+    padding: 0.95rem 1.8rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.88rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: all .3s cubic-bezier(.2,.8,.2,1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    border: none;
+    letter-spacing: 0.01em;
+  }
+  .btn-primary {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px -8px color-mix(in srgb, var(--ink) 30%, transparent);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-ghost:hover {
+    border-color: var(--ink);
+    background: var(--bg-soft);
+  }
+  .btn svg { width: 14px; height: 14px; }
+
+  .hero-stats {
+    margin-top: 4rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 600px;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+    animation: fadeUp 1s .55s ease both;
+  }
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 2.4rem;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .stat-num em { font-style: italic; }
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--ink-mute);
+    margin-top: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ==========  SECTION SHARED  ========== */
+  section {
+    padding: 8rem 2rem;
+    position: relative;
+  }
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--ink);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .eyebrow::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--ink);
+  }
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 4rem;
+    max-width: 900px;
+  }
+  .section-title em {
+    font-style: italic;
+  }
+
+  /* ==========  ABOUT  ========== */
+  .about {
+    background: var(--bg-soft);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 5rem;
+    align-items: start;
+  }
+  .about-portrait-wrap { position: relative; }
+  .about-portrait {
+    position: relative;
+    aspect-ratio: 4/5;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--ink);
+    box-shadow: var(--shadow);
+  }
+  .about-portrait::after {
+    content: 'AR';
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 11rem;
+    font-weight: 300;
+    color: var(--bg);
+    letter-spacing: -0.05em;
+  }
+  .about-portrait::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 70% 30%, rgba(255,255,255,0.06), transparent 60%),
+      linear-gradient(135deg, transparent 40%, rgba(0,0,0,0.4) 100%);
+    z-index: 1;
+  }
+  .about-portrait-tag {
+    position: absolute;
+    bottom: 1.2rem; left: 1.2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--bg);
+    opacity: 0.6;
+    letter-spacing: 0.15em;
+    z-index: 2;
+  }
+  .about-decoration {
+    position: absolute;
+    top: 18px; left: 18px;
+    width: 100%; height: 100%;
+    border: 1px solid var(--line-strong);
+    border-radius: 4px;
+    z-index: -1;
+  }
+
+  .about-body p {
+    font-size: 1.1rem;
+    line-height: 1.75;
+    color: var(--ink-soft);
+    margin-bottom: 1.5rem;
+  }
+  .about-body p:first-of-type::first-letter {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 4.2rem;
+    float: left;
+    line-height: 0.85;
+    margin: 0.4rem 0.6rem 0 0;
+    color: var(--ink);
+    font-weight: 400;
+  }
+  .about-facts {
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+  }
+  .fact-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-mute);
+    margin-bottom: 0.4rem;
+  }
+  .fact-value {
+    font-family: 'Fraunces', serif;
+    font-size: 1.05rem;
+    color: var(--ink);
+  }
+
+  /* ==========  SKILLS  ========== */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .skill-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 2rem 1.8rem;
+    transition: all .4s cubic-bezier(.2,.8,.2,1);
+    position: relative;
+    overflow: hidden;
+  }
+  .skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .5s cubic-bezier(.2,.8,.2,1);
+  }
+  .skill-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--line-strong);
+    box-shadow: var(--shadow);
+  }
+  .skill-card:hover::before { transform: scaleX(1); }
+
+  .skill-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--ink-mute);
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+  .skill-card h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+    color: var(--ink);
+  }
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .skill-tag {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg) 60%, transparent);
+    transition: all .25s ease;
+  }
+  .skill-card:hover .skill-tag { border-color: var(--line-strong); }
+
+  /* ==========  PROJECTS  ========== */
+  .projects {
+    background: var(--bg-soft);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .project {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 4rem;
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--line);
+    align-items: center;
+  }
+  .project:last-child { border-bottom: none; }
+  .project:nth-child(even) .project-visual { order: 2; }
+
+  .project-visual {
+    position: relative;
+    aspect-ratio: 9/16;
+    max-width: 320px;
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform .5s cubic-bezier(.2,.8,.2,1);
+    background: var(--ink);
+    border: 8px solid var(--ink);
+    margin: 0 auto;
+  }
+  .project:hover .project-visual { transform: translateY(-6px); }
+
+  /* iPhone mockup screen */
+  .phone-screen {
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    overflow: hidden;
+    background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
+    display: flex;
+    flex-direction: column;
+  }
+  .phone-screen.s1 { background: linear-gradient(160deg, #1e1e1e, #0a0a0a); }
+  .phone-screen.s2 { background: linear-gradient(160deg, #2a2a2a, #050505); }
+  .phone-screen.s3 { background: linear-gradient(160deg, #161616, #000000); }
+  .phone-screen.s4 { background: linear-gradient(160deg, #202020, #0a0a0a); }
+  .phone-screen.s5 { background: linear-gradient(160deg, #1c1c1c, #080808); }
+
+  .phone-notch {
+    position: absolute;
+    top: 8px; left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 22px;
+    background: #000;
+    border-radius: 99px;
+    z-index: 10;
+  }
+  .phone-status {
+    padding: 14px 20px 0;
+    display: flex;
+    justify-content: space-between;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    z-index: 5;
+  }
+  .phone-content {
+    flex: 1;
+    padding: 30px 20px 20px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .phone-title {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin-top: 1rem;
+  }
+  .phone-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.12);
+  }
+  .phone-bar.long { width: 80%; }
+  .phone-bar.med { width: 60%; }
+  .phone-bar.short { width: 40%; }
+  .phone-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: auto;
+  }
+  .phone-card-row {
+    height: 6px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 3px;
+    margin-bottom: 6px;
+  }
+  .phone-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 99px;
+    font-size: 9px;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-right: 4px;
+  }
+
+  .project-meta {
+    display: flex;
+    gap: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--ink-mute);
+    margin-bottom: 1rem;
+  }
+  .project-content h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    margin-bottom: 1.5rem;
+  }
+  .project-content h3 em { font-style: italic; }
+  .project-desc {
+    color: var(--ink-soft);
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+  }
+  .project-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .stack-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 4px;
+    color: var(--ink-soft);
+  }
+
+  /* ==========  EXPERIENCE  ========== */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px; bottom: 8px;
+    width: 1px;
+    background: linear-gradient(180deg, var(--ink), transparent);
+  }
+  .timeline-item {
+    position: relative;
+    padding-bottom: 4rem;
+  }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2.4rem; top: 8px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1.5px solid var(--ink);
+    box-shadow: 0 0 0 4px var(--bg);
+  }
+  .timeline-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.74rem;
+    color: var(--ink);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .timeline-role {
+    font-family: 'Fraunces', serif;
+    font-size: 1.7rem;
+    font-weight: 400;
+    line-height: 1.15;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.01em;
+  }
+  .timeline-role em { font-style: italic; }
+  .timeline-company {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    margin-bottom: 1.2rem;
+    font-style: italic;
+    font-family: 'Fraunces', serif;
+  }
+  .timeline-list {
+    list-style: none;
+    color: var(--ink-soft);
+  }
+  .timeline-list li {
+    padding-left: 1.4rem;
+    position: relative;
+    margin-bottom: 0.7rem;
+    line-height: 1.65;
+  }
+  .timeline-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--ink);
+  }
+
+  /* ==========  CONTACT  ========== */
+  .contact {
+    background: var(--bg-elev);
+    border-top: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--glow), transparent 60%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    filter: blur(80px);
+    z-index: 0;
+    pointer-events: none;
+  }
+  .contact-inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .contact h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    margin-bottom: 2rem;
+  }
+  .contact h2 em { font-style: italic; }
+  .contact-email {
+    display: inline-block;
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line-strong);
+    padding-bottom: 0.4rem;
+    margin: 1rem 0 3rem;
+    transition: all .3s ease;
+  }
+  .contact-email:hover {
+    border-bottom-color: var(--ink);
+    transform: translateY(-2px);
+  }
+  .contact-channels {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .channel {
+    padding: 0.8rem 1.4rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all .3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .channel:hover {
+    background: var(--ink);
+    color: var(--bg);
+    border-color: var(--ink);
+    transform: translateY(-2px);
+  }
+  .channel svg { width: 14px; height: 14px; }
+
+  footer {
+    padding: 2rem;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    color: var(--ink-mute);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    background: var(--bg);
+  }
+
+  /* ==========  RESPONSIVE  ========== */
+  @media (max-width: 900px) {
+    .hamburger { display: flex; }
+    .nav-links {
+      position: fixed;
+      top: 67px; left: 0; right: 0;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      padding: 1rem 2rem 2rem;
+      transform: translateY(-120%);
+      transition: transform .4s cubic-bezier(.2,.8,.2,1);
+    }
+    .nav-links.open { transform: translateY(0); }
+    .nav-links li {
+      width: 100%;
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-links li:last-child { border-bottom: none; }
+    .nav-links a {
+      display: block;
+      padding: 1.1rem 0;
+      font-size: 1.1rem;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--ink);
+    }
+
+    section { padding: 5rem 1.5rem; }
+    .hero { padding: 3rem 1.5rem 5rem; }
+    .nav-inner { padding: 1rem 1.5rem; }
+
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .about-portrait { max-width: 320px; }
+
+    .project { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 0; }
+    .project:nth-child(even) .project-visual { order: 0; }
+
+    .hero-stats { grid-template-columns: 1fr; gap: 1.2rem; }
+
+    .timeline-role { font-size: 1.35rem; }
+    .timeline { padding-left: 1.5rem; }
+    .timeline-item::before { left: -1.9rem; }
+  }
+    
+    @media (max-width: 900px) {
+      .hero-inner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .hero-image {
+        margin-top: 30px;
+      }
+    }
+
+  @media (max-width: 480px) {
+    .about-portrait::after { font-size: 7rem; }
+    .hero h1 { font-size: clamp(2.5rem, 14vw, 4rem); }
+    .section-title { margin-bottom: 2.5rem; }
+    .project-visual { max-width: 240px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== NAV ========== -->
+<nav>
+  <div class="nav-inner">
+    <a href="#top" class="logo">
+      <span class="logo-mark"></span>
+      <span>Ahmed Ramadan</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Work</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="moon-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<header class="hero" id="top">
+  <div class="hero-bg">
+    <div class="grid-lines"></div>
+    <div class="hero-orb"></div>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-content">
+
+      <div class="hero-meta">
+        <span class="pulse-dot"></span>
+        <span>Available for new opportunities — Cairo, EG</span>
+      </div>
+
+      <h1>Crafting<br>iOS apps.</h1>
+
+      <p class="hero-sub">
+        iOS Developer with 3+ years of experience building production-grade mobile applications.
+        I architect Swift apps that are clean, performant, and quietly delightful — from real-time chat platforms to secure payment integrations serving thousands of users.
+      </p>
+
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">
+          View selected work
+        </a>
+        <a href="#contact" class="btn btn-ghost">Get in touch</a>
+      </div>
+
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">12<em>+</em></div>
+          <div class="stat-label">Apps shipped</div>
+        </div>
+        <div>
+          <div class="stat-num">3<em>+</em></div>
+          <div class="stat-label">Years building</div>
+        </div>
+        <div>
+          <div class="stat-num">17K<em>+</em></div>
+          <div class="stat-label">Combined downloads</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+<!-- ========== ABOUT ========== -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-portrait-wrap">
+        <div class="about-decoration"></div>
+        <div class="about-portrait">
+          <span class="about-portrait-tag">// AHMED.RAMADAN</span>
+        </div>
+      </div>
+      <div class="about-body">
+        <div class="eyebrow">About</div>
+        <h2 class="section-title">Swift, <em>SwiftUI,</em> and the small details that ship.</h2>
+        <p>I'm an iOS Developer based in Cairo, currently building production apps at ITRoots after two years leading iOS development at Awamer Alshabaka, a Saudi-based IT firm. My focus is clean architecture, performance, and turning complex business logic into experiences that feel inevitable.</p>
+        <p>Over the past three years I've shipped 12+ apps spanning legal consulting, real-time commerce, payment platforms, and large-scale services. I work primarily in Swift with UIKit and SwiftUI, lean heavily on Combine for reactive flow, and care a lot about the architecture decisions you don't see — MVVM, Coordinators, Clean Architecture — that quietly keep apps maintainable years later.</p>
+        <div class="about-facts">
+          <div>
+            <div class="fact-label">Based in</div>
+            <div class="fact-value">Cairo, Egypt</div>
+          </div>
+          <div>
+            <div class="fact-label">Education</div>
+            <div class="fact-value">B.Sc. Computer Science</div>
+          </div>
+          <div>
+            <div class="fact-label">Languages</div>
+            <div class="fact-value">Arabic · English</div>
+          </div>
+          <div>
+            <div class="fact-label">Currently</div>
+            <div class="fact-value">iOS Developer @ ITRoots</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== SKILLS ========== -->
+<section class="skills" id="skills">
+  <div class="container">
+    <div class="eyebrow">Toolkit</div>
+    <h2 class="section-title">A focused stack — chosen for <em>shipping.</em></h2>
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-num">01 / Languages</div>
+        <h3>Programming Languages</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Swift</span>
+          <span class="skill-tag">C#</span>
+          <span class="skill-tag">Python</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-num">02 / UI</div>
+        <h3>UI Frameworks</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">UIKit</span>
+          <span class="skill-tag">SwiftUI</span>
+          <span class="skill-tag">Storyboard</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-num">03 / Architecture</div>
+        <h3>Architecture Patterns</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">MVC</span>
+          <span class="skill-tag">MVP</span>
+          <span class="skill-tag">MVVM</span>
+          <span class="skill-tag">VIPER</span>
+          <span class="skill-tag">Clean Architecture</span>
+          <span class="skill-tag">Coordinator</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-num">04 / Reactive</div>
+        <h3>Reactive Programming</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Combine</span>
+          <span class="skill-tag">Async/Await</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-num">05 / Networking</div>
+        <h3>Networking & APIs</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">RESTful APIs</span>
+          <span class="skill-tag">Socket.IO</span>
+          <span class="skill-tag">URLSession</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-num">06 / Persistence</div>
+        <h3>Data Persistence</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">CoreData</span>
+          <span class="skill-tag">Realm</span>
+          <span class="skill-tag">UserDefaults</span>
+          <span class="skill-tag">Keychain</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-num">07 / Maps</div>
+        <h3>Location & Maps</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">MapKit</span>
+          <span class="skill-tag">CoreLocation</span>
+          <span class="skill-tag">Google Maps</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-num">08 / Tooling</div>
+        <h3>Tools & Workflow</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Git</span>
+          <span class="skill-tag">SPM</span>
+          <span class="skill-tag">CocoaPods</span>
+          <span class="skill-tag">Figma</span>
+          <span class="skill-tag">Postman</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-num">09 / Core iOS</div>
+        <h3>Core iOS Concepts</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Concurrency</span>
+          <span class="skill-tag">Memory Management</span>
+          <span class="skill-tag">SOLID</span>
+          <span class="skill-tag">POP</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PROJECTS ========== -->
+<section class="projects" id="projects">
+  <div class="container">
+    <div class="eyebrow">Selected Work</div>
+    <h2 class="section-title">Apps I've shipped, <em>features I'm proud of.</em></h2>
+
+    <!-- Project 1 -->
+    <article class="project">
+      <div class="project-visual">
+        <div class="phone-notch"></div>
+        <div class="phone-screen s1">
+          <div class="phone-status"><span>9:41</span><span>●●●</span></div>
+          <div class="phone-content">
+            <span class="phone-pill">Tahweela</span>
+            <div class="phone-title">Production<br>Release</div>
+            <div class="phone-bar long"></div>
+            <div class="phone-bar med"></div>
+            <div class="phone-bar short"></div>
+            <div class="phone-card">
+              <div class="phone-card-row" style="width:90%"></div>
+              <div class="phone-card-row" style="width:60%"></div>
+              <div class="phone-card-row" style="width:75%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="project-content">
+        <div class="project-meta"><span>01 / Production iOS</span><span>Combine · MVVM</span></div>
+        <h3>Tahweela <em>— تحويله</em></h3>
+        <p class="project-desc">Took ownership of completing and enhancing a new version of a production iOS application, implementing missing features and significantly improving overall functionality. Built using Clean Architecture and the Coordinator pattern, leveraging Combine throughout. Designed and executed comprehensive testing scenarios for the release, resolving issues and ensuring high stability.</p>
+        <div class="project-stack">
+          <span class="stack-pill">Swift</span>
+          <span class="stack-pill">Clean Architecture</span>
+          <span class="stack-pill">Coordinator</span>
+          <span class="stack-pill">Combine</span>
+          <span class="stack-pill">MVVM</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Project 2 -->
+    <article class="project">
+      <div class="project-visual">
+        <div class="phone-notch"></div>
+        <div class="phone-screen s2">
+          <div class="phone-status"><span>9:41</span><span>●●●</span></div>
+          <div class="phone-content">
+            <span class="phone-pill">Mile</span>
+            <div class="phone-title">Reactive<br>by design</div>
+            <div class="phone-bar long"></div>
+            <div class="phone-bar med"></div>
+            <div class="phone-card">
+              <div class="phone-card-row" style="width:80%"></div>
+              <div class="phone-card-row" style="width:55%"></div>
+              <div class="phone-card-row" style="width:70%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="project-content">
+        <div class="project-meta"><span>02 / Hybrid UI</span><span>UIKit + SwiftUI</span></div>
+        <h3>Mile <em>— ميل</em></h3>
+        <p class="project-desc">A scalable iOS app combining UIKit and SwiftUI for a seamless user experience. Applied Clean Architecture to keep business logic independent and maintainable, MVVM for clear separation of concerns, and the Builder Pattern for flexible object creation. Combine drives reactive data flow throughout, enabling efficient asynchronous handling.</p>
+        <div class="project-stack">
+          <span class="stack-pill">Swift</span>
+          <span class="stack-pill">UIKit</span>
+          <span class="stack-pill">SwiftUI</span>
+          <span class="stack-pill">Combine</span>
+          <span class="stack-pill">Builder Pattern</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Project 3 -->
+    <article class="project">
+      <div class="project-visual">
+        <div class="phone-notch"></div>
+        <div class="phone-screen s3">
+          <div class="phone-status"><span>9:41</span><span>●●●</span></div>
+          <div class="phone-content">
+            <span class="phone-pill">Callah</span>
+            <span class="phone-pill">Live</span>
+            <div class="phone-title">Real-time<br>commerce</div>
+            <div class="phone-bar long"></div>
+            <div class="phone-bar short"></div>
+            <div class="phone-card">
+              <div class="phone-card-row" style="width:95%"></div>
+              <div class="phone-card-row" style="width:70%"></div>
+              <div class="phone-card-row" style="width:50%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="project-content">
+        <div class="project-meta"><span>03 / Large-scale Commercial</span><span>Real-time</span></div>
+        <h3>Callah <em>— commerce platform</em></h3>
+        <p class="project-desc">Collaborated on a large-scale commercial product for a leading Saudi company. Designed and implemented a real-time shopping and communication platform with smooth, responsive interactions. Integrated Socket.IO for real-time chat and HyperPay for secure, high-performance payment processing. Maintained clean version control through a branch-based Git workflow.</p>
+        <div class="project-stack">
+          <span class="stack-pill">Swift</span>
+          <span class="stack-pill">MVVM + Combine</span>
+          <span class="stack-pill">Socket.IO</span>
+          <span class="stack-pill">HyperPay</span>
+          <span class="stack-pill">Git Flow</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Project 4 -->
+    <article class="project">
+      <div class="project-visual">
+        <div class="phone-notch"></div>
+        <div class="phone-screen s4">
+          <div class="phone-status"><span>9:41</span><span>●●●</span></div>
+          <div class="phone-content">
+            <span class="phone-pill">Azhalny</span>
+            <span class="phone-pill">17K+</span>
+            <div class="phone-title">Legacy<br>refactored</div>
+            <div class="phone-bar long"></div>
+            <div class="phone-bar med"></div>
+            <div class="phone-bar short"></div>
+            <div class="phone-card">
+              <div class="phone-card-row" style="width:88%"></div>
+              <div class="phone-card-row" style="width:65%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="project-content">
+        <div class="project-meta"><span>04 / Legacy Revamp</span><span>17K+ Downloads</span></div>
+        <h3>Azhalny <em>— user · delegate · provider</em></h3>
+        <p class="project-desc">Revamped a legacy 2019 iOS codebase that had reached 17K+ downloads, performing major refactoring to boost performance, stability, and user experience. Integrated MyFatoorah payment gateway and optimized the app for high traffic, ensuring smooth, secure transactions and long-term reliability across three user roles.</p>
+        <div class="project-stack">
+          <span class="stack-pill">Swift</span>
+          <span class="stack-pill">Refactoring</span>
+          <span class="stack-pill">MyFatoorah</span>
+          <span class="stack-pill">Multi-role</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Project 5 -->
+    <article class="project">
+      <div class="project-visual">
+        <div class="phone-notch"></div>
+        <div class="phone-screen s5">
+          <div class="phone-status"><span>9:41</span><span>●●●</span></div>
+          <div class="phone-content">
+            <span class="phone-pill">Hukm</span>
+            <span class="phone-pill">Secure</span>
+            <div class="phone-title">Legal<br>consulting</div>
+            <div class="phone-bar long"></div>
+            <div class="phone-bar med"></div>
+            <div class="phone-card">
+              <div class="phone-card-row" style="width:90%"></div>
+              <div class="phone-card-row" style="width:60%"></div>
+              <div class="phone-card-row" style="width:75%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="project-content">
+        <div class="project-meta"><span>05 / Legal Tech</span><span>SOLID + POP</span></div>
+        <h3>Hukm <em>— legal consulting</em></h3>
+        <p class="project-desc">A secure legal consulting platform with sensitive business logic, ensuring data integrity and compliance with confidentiality requirements. Implemented real-time Socket.IO chat and integrated HyperPay for secure payment processing. Built with UIKit (Storyboard), applying Object-Oriented and Protocol-Oriented Programming with SOLID principles for clean, maintainable code.</p>
+        <div class="project-stack">
+          <span class="stack-pill">Swift</span>
+          <span class="stack-pill">UIKit</span>
+          <span class="stack-pill">Socket.IO</span>
+          <span class="stack-pill">HyperPay</span>
+          <span class="stack-pill">SOLID</span>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ========== EXPERIENCE ========== -->
+<section class="experience" id="experience">
+  <div class="container">
+    <div class="eyebrow">Experience</div>
+    <h2 class="section-title">Three years <em>building</em> in production.</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">03/2026 — Present</div>
+        <h3 class="timeline-role">iOS Developer <em>— ITRoots</em></h3>
+        <div class="timeline-company">Egypt-based IT solutions company</div>
+        <ul class="timeline-list">
+          <li>Building custom iOS solutions across software, GIS, mobile, and digital transformation services.</li>
+          <li>Contributing to product architecture and modern Swift practices on new initiatives.</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">08/2023 — 03/2026  ·  2+ Years</div>
+        <h3 class="timeline-role">iOS Developer <em>— Awamer Alshabaka (AAIT)</em></h3>
+        <div class="timeline-company">Saudi-based IT company, Egypt branch — supporting Saudi Vision 2030</div>
+        <ul class="timeline-list">
+          <li>Led full development of 12+ iOS apps, delivering user-focused solutions end to end.</li>
+          <li>Designed clean, scalable architectures and optimized app performance across the portfolio.</li>
+          <li>Integrated APIs and backend systems across multiple business domains.</li>
+          <li>Managed app releases, testing cycles, and App Store deployments.</li>
+          <li>Mentored junior developers and ensured high-quality code standards on the team.</li>
+          <li>Recognized for clear communication, ownership, and strong collaboration.</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">02/2021 — 02/2025</div>
+        <h3 class="timeline-role">B.Sc. Computer Science <em>— MET Academy</em></h3>
+        <div class="timeline-company">Mansoura, Egypt</div>
+        <ul class="timeline-list">
+          <li>Bachelor's degree in Computer Science, building the foundation in algorithms, data structures, and software engineering.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section class="contact" id="contact">
+  <div class="contact-glow"></div>
+  <div class="contact-inner">
+    <div class="eyebrow" style="justify-content: center;">Get in touch</div>
+    <h2>Let's build something <em>worth shipping.</em></h2>
+    <a href="mailto:12ramadan.ail@gmail.com" class="contact-email">12ramadan.ail@gmail.com</a>
+    <div class="contact-channels">
+      <a href="tel:+201149945712" class="channel">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        +20 114 994 5712
+      </a>
+      <a href="https://linkedin.com/in/ahmed-rmadan-b1a998233" target="_blank" rel="noopener" class="channel">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://medium.com/@12ramadan.ail" target="_blank" rel="noopener" class="channel">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12zM20.96 12c0 3.54-1.51 6.42-3.39 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42S20.96 8.46 20.96 12zM24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>
+        Medium
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Ahmed Ramadan · Built with Swift sensibilities
+</footer>
+
+<script>
+  // Theme toggle
+  const themeToggle = document.getElementById('themeToggle');
+  const root = document.documentElement;
+  themeToggle.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+  });
+
+  // Hamburger menu
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    navLinks.classList.toggle('open');
+  });
+
+  // Close menu on link click
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('active');
+      navLinks.classList.remove('open');
+    });
+  });
+</script>
+
+</body>
+</html>
